@@ -132,6 +132,7 @@ int main() {
     while (true) {
         cyw43_arch_poll();
         sleep_ms(100);
+        sleep_ms(5000);
         printf("Interna: %.2f°C | Externa: %.2f°C\n", read_internal_temp(), read_tmp36());
     }
 
