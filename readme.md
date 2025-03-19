@@ -42,12 +42,6 @@ float read_internal_temp() {
 }
 
 // --- Função para ler a temperatura do TMP36 (ou outro sensor analógico) ---
-float read_tmp36() {
-    adc_select_input(0); // ADC0 = GPIO26
-    uint16_t raw = adc_read();
-    float voltage = raw * 3.3f / 4096;
-    return (voltage - 0.5f) * 100.0f; // Fórmula do TMP36 para Celsius
-}
 
 // --- Função para criar a resposta HTML ---
 void create_http_response() {
@@ -70,11 +64,12 @@ void create_http_response() {
         "</head>"
         "<body>"
         "  <h1>Temperatura Atual</h1>"
-        "  <p>🌡️ Interna: %.2f°C</p>"
-        "  <p>🌡️ Externa (TMP36): %.2f°C</p>"
+        "  <p>🌡️ Interna: %.2f°F</p>"
+        "  <h1> Qual Led está ativo?</h1>"
+        "  <p> LED_R: %s </p>"
         "</body>"
         "</html>\r\n",
-        internal_temp, external_temp);
+        internal_temp, gpio_get(LED_R) ? "true" : "false");
 }
 
 // Callback para processar requisições HTTP
