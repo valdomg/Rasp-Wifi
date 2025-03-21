@@ -10,7 +10,6 @@ char http_response[1024];
 void create_http_response() {
 
     float internal_temp = read_internal_temp();
-    setupLED();
     
     snprintf(http_response, sizeof(http_response),
         "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n"
@@ -19,21 +18,29 @@ void create_http_response() {
         "<head>"
         "  <meta charset=\"UTF-8\">"
         "  <title>Monitor de Temperatura</title>"
-        "  <meta http-equiv='refresh' content='5'>" // Atualiza a página a cada 5 segundos
+        "  <meta content='width=device-width, initial-scale=1.0'>"
         "  <style>"
-        "    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }"
-        "    h1 { color: #333; }"
+        "    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; color: white; background-color: black; }"
         "    p { font-size: 24px; font-weight: bold; color: #007BFF; }"
         "  </style>"
+        "    <script> "
+            "   function updateLuminosidade(value) {"
+                    "fetch(`/led/luminosidade?value=` + value, { method: 'GET' })"
+                        ".then(response => console.log(\"Brilho ajustado para: \" + value))"
+                        ".catch(error => console.error(\"Erro ao ajustar brilho:\", error));}"
+        "   </script>"
         "</head>"
         "<body>"
-        "  <h1>Temperatura Atual</h1>"
-        "  <p>🌡️ Interna: %.2f°F</p>"
-        "  <h1> Qual Led está ativo?</h1>"
-        "  <p> LED_R: %s </p>"
+        "<h1>Temperatura Atual:  %.2f°F</h1>"
+        "<p>Ajuste a luminosidade do LED usando o controle deslizante.</p>"
+        "<input type='range' min='0' max='255' value='128' oninput='updateLuminosidade(this.value)'>"
+        "<br>"
+        "<a href=\"/led/on\"><button>Ligar Led</button></a>"
+        "<a href=\"/led/off\"><button>Desligar Led</button></a>"
+        "<a href=\"/led/animacao\"><button>Animação de Led</button></a>"
         "</body>"
         "</html>\r\n",
-        internal_temp, gpio_get(LED_R) ? "true" : "false");
+        internal_temp);
 }
 
 // Callback para processar requisições HTTP
@@ -43,15 +50,42 @@ static err_t http_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_
         return ERR_OK;
     }
 
+    char *request = (char *)p->payload;
+    
+    if(strstr(request, "GET /led/on")){
+        controleLedLigar();
+    } 
+
+    else if(strstr(request, "GET /led/off")){
+        controleLedDesligar();
+    } 
+
+    else if (strstr(request, "GET /led/animacao")){
+        animacaoLed();
+    }
+    
+    else if(strstr(request, "GET /led/luminosidade?value=")){
+        char *ptr = strstr (request, "value=");
+        if(ptr){
+            int luminosidade = atoi(ptr + 6);
+            if (luminosidade >= 0 && luminosidade <= 255) {
+                sleep_ms(50);
+                controleDeIluminacao(luminosidade);
+            }
+        }
+    }
+
     // Atualiza o HTML com a temperatura atual
     create_http_response();
     
     // Envia a resposta HTTP
     tcp_write(tpcb, http_response, strlen(http_response), TCP_WRITE_FLAG_COPY);
 
+
     // Libera o buffer recebido
     pbuf_free(p);
     return ERR_OK;
+    
 }
 
 // Callback de conexão: associa o http_callback à conexão
