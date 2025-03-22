@@ -50,20 +50,26 @@ static err_t http_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_
         return ERR_OK;
     }
 
+    /*CONDICIONAIS PARA CONTROLE DOS LEDS */
+
     char *request = (char *)p->payload;
     
+    /*PARA LIGAR */
     if(strstr(request, "GET /led/on")){
         controleLedLigar();
-    } 
-
+    }
+    
+    /*PARA DESLIGAR*/
     else if(strstr(request, "GET /led/off")){
         controleLedDesligar();
     } 
 
+    /*PARA ANIMAÇÃO*/
     else if (strstr(request, "GET /led/animacao")){
         animacaoLed();
     }
     
+    /*PARA CONTROLE DE LUMINOSIDADE*/
     else if(strstr(request, "GET /led/luminosidade?value=")){
         char *ptr = strstr (request, "value=");
         if(ptr){
