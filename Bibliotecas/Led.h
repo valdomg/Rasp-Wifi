@@ -36,6 +36,9 @@ void setupLED(){
     gpio_put(LED_B, ligado);
 }
 
+/*
+SETUP DE PWM
+*/
 void setupPwm(){
     gpio_set_function(LED_B, GPIO_FUNC_PWM);
     uint16_t slice_B = pwm_gpio_to_slice_num(LED_B);
@@ -61,7 +64,7 @@ void setupPwm(){
     
 }
 
-/*LIGAR/DESLIGAR LED */
+/*LIGAR LED */
 void controleLedLigar(){
     loopAni = 0;
 
@@ -70,6 +73,7 @@ void controleLedLigar(){
     pwm_set_gpio_level(LED_B, PERIOD);
 }
 
+/*DESLIGAR LED */
 void controleLedDesligar(){
     loopAni = 0;
 
@@ -78,6 +82,8 @@ void controleLedDesligar(){
     pwm_set_gpio_level(LED_B, 0);
 }
 
+
+/*ANIMAÇÃO DE LED */
 void animacaoLed(){
     uint up_down = 1;
     loopAni = 1;
