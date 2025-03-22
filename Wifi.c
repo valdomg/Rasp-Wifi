@@ -29,12 +29,8 @@ int main() {
         }
         sleep_ms(1000);
     }
-    
-    
 
-    //inicia os leds_gpio
-    //setupLED();
-
+    //Inicial o Setup para uso do pwm
     setupPwm();
 
     //inicia os ADC_GPIO
@@ -47,9 +43,6 @@ int main() {
     while (true) {
         cyw43_arch_poll();
         sleep_ms(100);
-       // printf("Interna: %.2f°F \n", read_internal_temp());
-       // printf("Led R: %d , led G: %d, led B: %d \n", gpio_get(LED_R), gpio_get(LED_G),gpio_get(LED_G));
-
     }
 
     cyw43_arch_deinit();
