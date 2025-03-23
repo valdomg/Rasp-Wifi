@@ -1,11 +1,16 @@
 #include "hardware/pwm.h"
 #include "pico/stdlib.h"
 
+/** \brief Pinagem dos leds
+ * --- ---
+*/
 #define LED_R 13
 #define LED_G 11
 #define LED_B 12
 
-/*CONFIGURAÇÕES DO PWW*/
+/** \brief Variável que servirão para configurar o PWM para os leds
+ * --- ---
+*/
 const uint16_t PERIOD = 256;
 const float DIVIDER_PWM = 16.0;
 const uint16_t LED_STEP = 5;
@@ -16,7 +21,9 @@ _Bool ligado = 0;
 _Bool loopAni = 1;
 
 
-/*SETUP LEDS GPIO*/
+/** \brief Função para configurar os leds para sinal digital (0) - desligado (1) - ligado
+ * --- ---
+*/
 void setupLED(){
     stdio_init_all();
 
@@ -36,8 +43,8 @@ void setupLED(){
     gpio_put(LED_B, ligado);
 }
 
-/*
-SETUP DE PWM
+/** \brief Função para configurar os leds com pwm
+ * --- ---
 */
 void setupPwm(){
     gpio_set_function(LED_B, GPIO_FUNC_PWM);
@@ -64,7 +71,9 @@ void setupPwm(){
     
 }
 
-/*LIGAR LED */
+/** \brief Função para ligar o led
+ * --- ---
+*/
 void controleLedLigar(){
     loopAni = 0;
 
@@ -73,7 +82,9 @@ void controleLedLigar(){
     pwm_set_gpio_level(LED_B, PERIOD);
 }
 
-/*DESLIGAR LED */
+/** \brief Função para desligar o led
+ * --- ---
+*/
 void controleLedDesligar(){
     loopAni = 0;
 
@@ -82,8 +93,9 @@ void controleLedDesligar(){
     pwm_set_gpio_level(LED_B, 0);
 }
 
-
-/*ANIMAÇÃO DE LED */
+/** \brief Função para animação de fade in e fade out do led
+ *  --- ---
+*/
 void animacaoLed(){
     uint up_down = 1;
     loopAni = 1;
@@ -106,21 +118,21 @@ void animacaoLed(){
             if(led_level < LED_STEP){up_down = 1;}
         }
 
-        printf("Led level %d\n", led_level);
-
         if(loopAni == 0){break;}
         
     }
 }
 
-/*LÓGICA PARA CONTROLAR A LUMINOSIDADE DO LED VIA BOTÃO COM USO DO PWM*/
-void controleDeIluminacao(uint led_level){
+/** \brief Função para controle da luminosidade do led
+ * 
+ * \param led_level determina a quantidade de luminosidade que o led terá
+*/
+void controleDeIluminacao(int led_level){
     loopAni = 0;
 
     pwm_set_gpio_level(LED_R, led_level);
-    //pwm_set_gpio_level(LED_G, led_level);
+    pwm_set_gpio_level(LED_G, led_level);
     pwm_set_gpio_level(LED_B, led_level);
 
-    printf("Led level %d\n", led_level);
 
 }

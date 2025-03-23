@@ -20,7 +20,7 @@ void create_http_response() {
         "  <title>Monitor de Temperatura</title>"
         "  <meta content='width=device-width, initial-scale=1.0'>"
         "  <style>"
-        "    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; color: white; background-color: black; }"
+        "    body { margin:auto; font-family: Arial, sans-serif; text-align: center; padding: 50px; color: white; background-color: black; }"
         "    p { font-size: 24px; font-weight: bold; color: #007BFF; }"
         "  </style>"
         "    <script> "
@@ -31,7 +31,7 @@ void create_http_response() {
         "   </script>"
         "</head>"
         "<body>"
-        "<h1>Temperatura Atual:  %.2f°F</h1>"
+        "<h1>Temperatura Atual:  %.2f°C</h1>"
         "<p>Ajuste a luminosidade do LED usando o controle deslizante.</p>"
         "<input type='range' min='0' max='255' value='128' oninput='updateLuminosidade(this.value)'>"
         "<br>"
@@ -50,8 +50,10 @@ static err_t http_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_
         return ERR_OK;
     }
 
-    /*CONDICIONAIS PARA CONTROLE DOS LEDS */
-
+    /** \brief  para receber requisiões
+    *           com isso é possível determinar qual botão o usuário clicou
+    *           assim enviando de volta o comando escolhido por meio de condicionais
+    */
     char *request = (char *)p->payload;
     
     /*PARA LIGAR */
@@ -68,6 +70,9 @@ static err_t http_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_
     else if (strstr(request, "GET /led/animacao")){
         animacaoLed();
     }
+    /** \brief Neste endpoint ocorre o tratamento do número enviado pelo input range do html
+    *
+    */
     
     /*PARA CONTROLE DE LUMINOSIDADE*/
     else if(strstr(request, "GET /led/luminosidade?value=")){
