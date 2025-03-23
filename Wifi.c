@@ -11,30 +11,26 @@ int main() {
     printf("Iniciando servidor HTTP\n");
 
     // Inicializa Wi-Fi
-    while (true){
-        if (cyw43_arch_init()) {
-            printf("Erro ao inicializar o Wi-Fi\n");
-        }
-    
-        cyw43_arch_enable_sta_mode();
-        printf("Conectando ao Wi-Fi...\n");
-    
-        if (cyw43_arch_wifi_connect_timeout_ms(WIFI_SSID, WIFI_PASS, CYW43_AUTH_WPA2_AES_PSK, 10000)) {
-            printf("Falha ao conectar ao Wi-Fi\n");
-            
-        } else {
-            uint8_t *ip_address = (uint8_t *)&(cyw43_state.netif[0].ip_addr.addr);
-            printf("Wi-Fi conectado! IP: %d.%d.%d.%d\n", ip_address[0], ip_address[1], ip_address[2], ip_address[3]);
-            break;
-        }
-        sleep_ms(1000);
+
+    if (cyw43_arch_init()){
+        printf("Erro ao inicializar o Wi-Fi\n");
     }
-    
-    
 
-    //inicia os leds_gpio
-    //setupLED();
+    cyw43_arch_enable_sta_mode();
+    printf("Conectando ao Wi-Fi...\n");
 
+    if (cyw43_arch_wifi_connect_timeout_ms(WIFI_SSID, WIFI_PASS, CYW43_AUTH_WPA2_AES_PSK, 10000)){
+        printf("Falha ao conectar ao Wi-Fi\n");
+    }
+
+    else{
+        uint8_t *ip_address = (uint8_t *)&(cyw43_state.netif[0].ip_addr.addr);
+        printf("Wi-Fi conectado! IP: %d.%d.%d.%d\n", ip_address[0], ip_address[1], ip_address[2], ip_address[3]);
+    }
+
+    sleep_ms(1000);
+
+    //inicia os leds pwm
     setupPwm();
 
     //inicia os ADC_GPIO
@@ -47,8 +43,6 @@ int main() {
     while (true) {
         cyw43_arch_poll();
         sleep_ms(100);
-       // printf("Interna: %.2f°F \n", read_internal_temp());
-       // printf("Led R: %d , led G: %d, led B: %d \n", gpio_get(LED_R), gpio_get(LED_G),gpio_get(LED_G));
 
     }
 
