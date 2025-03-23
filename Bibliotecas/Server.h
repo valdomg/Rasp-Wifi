@@ -4,7 +4,7 @@
 #include "Led.h"
 
 // Buffer para resposta HTTP
-char http_response[1024];
+char http_response[2048];
 
 // --- Função para criar a resposta HTML ---
 void create_http_response() {
@@ -22,6 +22,7 @@ void create_http_response() {
         "  <style>"
         "    body { margin:auto; font-family: Arial, sans-serif; text-align: center; padding: 50px; color: white; background-color: black; }"
         "    p { font-size: 24px; font-weight: bold; color: #007BFF; }"
+        "    button{ height: 48px; width: 89px }"
         "  </style>"
         "    <script> "
             "   function updateLuminosidade(value) {"
@@ -35,9 +36,9 @@ void create_http_response() {
         "<p>Ajuste a luminosidade do LED usando o controle deslizante.</p>"
         "<input type='range' min='0' max='255' value='128' oninput='updateLuminosidade(this.value)'>"
         "<br>"
-        "<a href=\"/led/on\"><button>Ligar Led</button></a>"
-        "<a href=\"/led/off\"><button>Desligar Led</button></a>"
-        "<a href=\"/led/animacao\"><button>Animação de Led</button></a>"
+        "<a href=\"/led/on\"><button>Ligar Led</button></a> <br>"
+        "<a href=\"/led/off\"><button>Desligar Led</button></a> <br>"
+        "<a href=\"/led/animacao\"><button>Animação de Led</button></a> <br>"
         "</body>"
         "</html>\r\n",
         internal_temp);
