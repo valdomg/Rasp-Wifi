@@ -5,9 +5,19 @@
 #define WIFI_SSID ""  // Nome da sua rede Wi-Fi
 #define WIFI_PASS ""   // Senha da sua rede Wi-Fi
 
+
+
 int main() {
     stdio_init_all();
-    sleep_ms(10000);
+
+    // inicia os leds pwm
+    setupPwm();
+
+    // inicia os ADC_GPIO
+    setupADC();
+
+    led_sleep();
+
     printf("Iniciando servidor HTTP\n");
 
     // Inicializa Wi-Fi
@@ -21,20 +31,18 @@ int main() {
 
     if (cyw43_arch_wifi_connect_timeout_ms(WIFI_SSID, WIFI_PASS, CYW43_AUTH_WPA2_AES_PSK, 10000)){
         printf("Falha ao conectar ao Wi-Fi\n");
+        led_err();
     }
 
     else{
         uint8_t *ip_address = (uint8_t *)&(cyw43_state.netif[0].ip_addr.addr);
         printf("Wi-Fi conectado! IP: %d.%d.%d.%d\n", ip_address[0], ip_address[1], ip_address[2], ip_address[3]);
+        led_funcional();
     }
 
     sleep_ms(1000);
 
-    //inicia os leds pwm
-    setupPwm();
 
-    //inicia os ADC_GPIO
-    setupADC();
 
     // Inicia o servidor HTTP
     start_http_server();
