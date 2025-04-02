@@ -136,3 +136,60 @@ void controleDeIluminacao(int led_level){
 
 
 }
+
+/**
+ * @brief Função para usar como sleep, facilita o debug
+ */
+
+void led_sleep(){
+    int count = 0; 
+
+    while(count <= 5 ){
+
+        count++;
+
+        pwm_set_gpio_level(LED_R, PERIOD);
+        pwm_set_gpio_level(LED_G, PERIOD);
+        pwm_set_gpio_level(LED_B, PERIOD);
+
+        sleep_ms(1000);
+
+        pwm_set_gpio_level(LED_R, 0);
+        pwm_set_gpio_level(LED_G, 0);
+        pwm_set_gpio_level(LED_B, 0);
+        
+        sleep_ms(1000);
+
+    }
+}
+
+/**
+ * @brief Função para usar como sinal de erro, facilita o debug
+ */
+
+ void led_err(){
+
+    int count = 0; 
+
+    while(count <= 3 ){
+
+        pwm_set_gpio_level(LED_R, PERIOD/2);
+
+        count++;
+        sleep_ms(1000);
+    }
+}
+
+void led_funcional(){
+    
+    int count = 0; 
+
+    while(count <= 3 ){
+
+        pwm_set_gpio_level(LED_G, PERIOD/2);
+
+        count++;
+        sleep_ms(1000);
+    }
+
+}
